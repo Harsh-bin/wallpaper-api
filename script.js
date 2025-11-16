@@ -16,8 +16,8 @@
             }
             const randomIndex = Math.floor(Math.random() * media.length);
             const randomMediaFile = media[randomIndex];
-            const media = `${randomMediaFile}`;
-            window.location.replace(media);
+            const mediaUrl = `${randomMediaFile}`;
+            window.location.replace(mediaUrl);
         })
         .catch(error => {
             console.error('Failed to fetch or process media list:', error);
