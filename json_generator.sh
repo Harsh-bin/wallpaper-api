@@ -1,28 +1,36 @@
 #!/bin/bash
 
-# This script finds all image files in the current directory and creates a JSON file `img_list.json` containing their names.
+# Directories to scan for media.
+IMG_DIR="./img"
+VIDEO_DIR="./videos"
+OUTPUT_FILE="random_media_list.json"
 
-# Directory to scan for images. Use "." for the current directory.
-IMG_DIR="."
-OUTPUT_FILE="img_list.json"
+MEDIA_FILES=$(find "$IMG_DIR" "$VIDEO_DIR" -type f \( \
+  -iname "*.png" -o -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.gif" -o -iname "*.webp" -o -iname "*.svg" \
+  -o -iname "*.mp4" -o -iname "*.webm" \
+  \) | sed 's|^\./||' | shuf)
 
-echo "{" > "$OUTPUT_FILE"
-echo '  "images": [' >> "$OUTPUT_FILE"
-COUNTER=0
-IMAGE_FILES=$(find "$IMG_DIR" -maxdepth 1 -type f \( -iname "*.jpg" -o -iname "*.jpeg" -o -iname "*.png" -o -iname "*.gif" -o -iname "*.webp" \) | sed 's|^\./||' | sort)
+# Start JSON file generation
+{
+  echo "{"
+  echo '  "media": ['
 
-NUM_FILES=$(echo "$IMAGE_FILES" | wc -l)
+  COUNTER=0
+  NUM_FILES=$(echo "$MEDIA_FILES" | wc -l)
 
-while IFS= read -r file; do
-  COUNTER=$((COUNTER + 1))
-  if [ "$COUNTER" -eq "$NUM_FILES" ]; then
-    echo "    \"$file\"" >> "$OUTPUT_FILE"
-  else
-    echo "    \"$file\"," >> "$OUTPUT_FILE"
-  fi
-done <<< "$IMAGE_FILES"
+  # Loop through the shuffled list and add to the JSON file
+  while IFS= read -r file; do
+    COUNTER=$((COUNTER + 1))
+    # Add a comma after each line except the last one
+    if [ "$COUNTER" -eq "$NUM_FILES" ]; then
+      echo "    \"$file\""
+    else
+      echo "    \"$file\","
+    fi
+  done <<< "$MEDIA_FILES"
 
-echo "  ]" >> "$OUTPUT_FILE"
-echo "}" >> "$OUTPUT_FILE"
+  echo "  ]"
+  echo "}"
+} > "$OUTPUT_FILE"
 
-echo "✅ Success: '$OUTPUT_FILE' was generated with $NUM_FILES images."
+echo "✅ Success: '$OUTPUT_FILE' was generated with $NUM_FILES media files."

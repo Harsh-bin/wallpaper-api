@@ -1,5 +1,5 @@
 (function() {
-    const listUrl = 'img_list.json';
+    const listUrl = 'random_media_list.json';
 
     fetch(listUrl)
         .then(response => {
@@ -9,17 +9,17 @@
             return response.json();
         })
         .then(data => {
-            const images = data.images;
-            if (!images || images.length === 0) {
-                console.error("Image list is empty or not found.");
+            const media = data.media;
+            if (!media || media.length === 0) {
+                console.error("media list is empty or not found.");
                 return;
             }
-            const randomIndex = Math.floor(Math.random() * images.length);
-            const randomImageFile = images[randomIndex];
-            const imageUrl = `img/${randomImageFile}`;
-            window.location.replace(imageUrl);
+            const randomIndex = Math.floor(Math.random() * media.length);
+            const randomMediaFile = media[randomIndex];
+            const media = `${randomMediaFile}`;
+            window.location.replace(media);
         })
         .catch(error => {
-            console.error('Failed to fetch or process image list:', error);
+            console.error('Failed to fetch or process media list:', error);
         });
 })();
